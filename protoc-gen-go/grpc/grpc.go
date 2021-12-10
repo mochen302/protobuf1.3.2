@@ -172,7 +172,7 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 	g.P()
 
 	// Client structure.
-	g.P("type ", unexport(servName), "Client struct {")
+	g.P("type Proxy", unexport(servName), "Client struct {")
 	g.P("cc *", grpcPkg, ".ClientConn")
 	g.P("}")
 	g.P()
@@ -182,7 +182,7 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 		g.P(deprecationComment)
 	}
 	g.P("func New", servName, "Client (cc *", grpcPkg, ".ClientConn) ", servName, "Client {")
-	g.P("return &", unexport(servName), "Client{cc}")
+	g.P("return &Proxy", unexport(servName), "Client{cc}")
 	g.P("}")
 	g.P()
 
@@ -333,7 +333,7 @@ func (g *grpc) generateClientMethod(servName, fullServName, serviceDescVar strin
 	if method.GetOptions().GetDeprecated() {
 		g.P(deprecationComment)
 	}
-	g.P("func (c *", unexport(servName), "Client) ", g.generateClientSignature(servName, method), "{")
+	g.P("func (c *Proxy", unexport(servName), "Client) ", g.generateClientSignature(servName, method), "{")
 	if !method.GetServerStreaming() && !method.GetClientStreaming() {
 		g.P("out := new(", outType, ")")
 		// TODO: Pass descExpr to Invoke.
