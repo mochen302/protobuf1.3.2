@@ -469,17 +469,7 @@ func (g *grpc) generateServerMethod(servName, fullServName string, method *pb.Me
 		g.P("FullMethod: ", strconv.Quote(fmt.Sprintf("/%s/%s", fullServName, methName)), ",")
 		g.P("}")
 		g.P("handler := func(ctx ", contextPkg, ".Context, req interface{}) (interface{}, error) {")
-		g.P(`var err error
-		var result interface{}
-		func() {
-			defer func() {
-				if errPanic := recover(); errPanic != nil {
-					err = fmt.Errorf("panic:%v", errPanic)
-				}
-			}()`)
-		g.P("result, err = srv.(", servName, "Server).", methName, "(ctx, req.(*", inType, "))")
-		g.P("}()")
-		g.P("return result, err")
+		g.P("return srv.(", servName, "Server).", methName, "(ctx, req.(*", inType, "))")
 		g.P("}")
 		g.P("return interceptor(ctx, in, info, handler)")
 		g.P("}")
